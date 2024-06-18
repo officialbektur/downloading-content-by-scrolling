@@ -13,7 +13,7 @@ class IndexController extends Controller
     public function __invoke(PostIndexRequest $request): JsonResponse
     {
         $data = collect($request->validated());
-		dd($request->validated());
+		dd($request);
         $page = $data->get('page', 1);
 
         $posts = Post::latest()->paginate(10, ['*'], 'page', $page);
