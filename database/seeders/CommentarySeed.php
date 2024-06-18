@@ -16,7 +16,7 @@ class CommentarySeed extends Seeder
     {
         $posts = Post::all();
         foreach ($posts as $post) {
-            Commentary::factory(random_int(1, 500))->create([
+            Commentary::factory(random_int(1, 20000))->create([
                 'post_id' => $post->id
             ]);
         }
