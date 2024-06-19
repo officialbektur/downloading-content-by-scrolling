@@ -19,6 +19,7 @@ print_second:
     only:
       - develop
     script:
+      - echo "начало"
       - echo "$CI_COMMIT_SHA"
       - echo $CI_COMMIT_SHA
       - echo "$CI_COMMIT_TAG"
