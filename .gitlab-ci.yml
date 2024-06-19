@@ -1,7 +1,5 @@
 stages:
   - first
-  - second
-  - third
 
 print_first:
   stage: first
@@ -10,27 +8,5 @@ print_first:
   only:
     - develop
   script:
-    - echo "Hello word first"
-
-print_second:
-    stage: second
-    tags:
-      - build
-    only:
-      - develop
-    script:
-      - echo "$CI_COMMIT_SHA"
-      - echo $CI_COMMIT_SHA
-      - echo "$CI_COMMIT_TAG"
-      - echo $CI_COMMIT_TAG
-      - echo "$CI_COMMIT_TITLE"
-      - echo $CI_COMMIT_TITLE
-
-print_third:
-    stage: third
-    tags:
-      - build
-    only:
-      - develop
-    script:
-      - echo "Hello word third"
+    - export VARBI="DSDsdSD"
+    - echo $VARBI
