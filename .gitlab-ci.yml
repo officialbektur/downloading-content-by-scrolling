@@ -19,7 +19,12 @@ print_second:
     only:
       - develop
     script:
-      - echo "Hello word second"
+      - echo "$CI_COMMIT_SHA"
+      - echo $CI_COMMIT_SHA
+      - echo "$CI_COMMIT_TAG"
+      - echo $CI_COMMIT_TAG
+      - echo "$CI_COMMIT_TITLE"
+      - echo $CI_COMMIT_TITLE
 
 print_third:
     stage: third
