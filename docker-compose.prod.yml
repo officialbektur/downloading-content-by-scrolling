@@ -15,7 +15,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: _docker/cicd/app/Dockerfile
+      dockerfile: _docker/app/Dockerfile
     volumes:
       - ./:/var/www
     container_name: project_app
