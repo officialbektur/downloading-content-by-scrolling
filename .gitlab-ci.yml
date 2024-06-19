@@ -1,9 +1,8 @@
-tages:
+stages:
   - build
-  - deploy
 
 variables:
-  REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"
+  REGISTRY: "registry.gitlab.com/laravelcreative/laravelcicd"
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
