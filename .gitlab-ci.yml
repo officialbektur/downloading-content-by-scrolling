@@ -1,5 +1,6 @@
 stages:
   - build
+  - develop
 
 variables:
   REGISTRY: "registry.gitlab.com/laravelcreative/laravelcicd"
