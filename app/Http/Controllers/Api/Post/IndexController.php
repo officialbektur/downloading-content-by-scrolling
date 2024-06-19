@@ -12,7 +12,6 @@ class IndexController extends Controller
 {
     public function __invoke(PostIndexRequest $request): JsonResponse
     {
-        dd(request()->all());
         $data = collect($request->validated());
 
         $page = $data->get('page', 1);
