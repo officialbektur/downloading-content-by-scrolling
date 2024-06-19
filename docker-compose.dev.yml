@@ -31,7 +31,7 @@ services:
       - 80:80
     depends_on:
       - app
-    container_name: project_nginx
+    container_name: ${CONTAINER_PREFIX}_nginx
 
   db:
     image: mysql:8.0
