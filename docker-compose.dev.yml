@@ -1,6 +1,17 @@
 version: '3.2'
 
 services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./:/var/www
+      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - 80:80
+    depends_on:
+      - app
+    container_name: ${CONTAINER_PREFIX}_nginx
+
   app:
     container_name: ${CONTAINER_PREFIX}_app
     image: $REGISTRY/$PROJECT_ENV/app:$PROJECT_VERSION
@@ -21,17 +32,6 @@ services:
     working_dir: /var/www
     depends_on:
       - db
-
-  web:
-    image: nginx:latest
-    volumes:
-      - ./:/var/www
-      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
-    ports:
-      - 80:80
-    depends_on:
-      - app
-    container_name: ${CONTAINER_PREFIX}_nginx
 
   db:
     image: mysql:8.0
