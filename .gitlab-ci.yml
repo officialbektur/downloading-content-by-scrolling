@@ -2,11 +2,14 @@ tages:
   - build
   - deploy
 
+
 variables:
   REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"
 
+
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
 
 app_build:
   stage: build
