@@ -7,5 +7,5 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::get('/posts', \App\Http\Controllers\Api\Post\IndexController::class)->name("api.post.index");
+Route::post('/posts', \App\Http\Controllers\Api\Post\IndexController::class)->name("api.post.index");
 Route::get('/posts/{post}', \App\Http\Controllers\Api\Post\ShowController::class)->name("api.post.show");

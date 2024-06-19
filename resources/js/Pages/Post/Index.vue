@@ -42,7 +42,7 @@ export default {
 			this.sendingRequest = true;
 			this.loading = true;
 			try {
-				const response = await axios.get(route('api.post.index') + `?page=${this.page}`);
+				const response = await axios.post(route('api.post.index'), { page: this.page });
 				if (response.data?.data?.length) {
 					this.sendingRequest = false;
 					this.loading = false;
