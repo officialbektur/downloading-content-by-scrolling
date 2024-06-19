@@ -26,7 +26,8 @@ services:
     image: mysql:latest
     restart: always
     volumes:
-      - ./tmp/db:/var/lib/mysql
+      - ./tmp/db:/var/lib/db
+      - ./_docker/db/db.ini:/etc/mysql/conf.d/db.ini:ro
     environment:
       MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: root
