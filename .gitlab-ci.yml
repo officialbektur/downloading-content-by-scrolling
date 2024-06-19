@@ -1,5 +1,6 @@
 tages:
   - build
+  - deploy
 
 variables:
   REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"
