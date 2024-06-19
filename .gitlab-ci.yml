@@ -1,7 +1,7 @@
 stages:
   - first
-  - second
   - third
+  - second
 
 print_first:
   stage: first
