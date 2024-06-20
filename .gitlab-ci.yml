@@ -1,5 +1,3 @@
-# .gitlab-ci.yml
-
 stages:
   - build  # Определение стадии сборки
   - deploy  # Определение стадии развертывания
@@ -34,15 +32,26 @@ dev_deploy:
     - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml down  # Остановка всех сервисов, определенных в docker-compose.dev.yml
     - docker container prune -f  # Удаление всех неиспользуемых контейнеров
     - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml up -d  # Запуск всех сервисов, определенных в docker-compose.dev.yml
+
+    # Копирование и настройка .env файла
+    - cp .env.example .env  # Если файл .env.example существует и вы хотите скопировать его в .env
+    - docker exec ${CONTAINER_PREFIX}_app php artisan key:generate  # Генерация нового ключа приложения
+
+    # Установка зависимостей и миграция базы данных
     - docker exec ${CONTAINER_PREFIX}_app composer install --no-interaction --prefer-dist --optimize-autoloader  # Установка зависимостей Composer без взаимодействия с пользователем
     - docker exec ${CONTAINER_PREFIX}_app npm ci  # Установка зависимостей npm
     - docker exec ${CONTAINER_PREFIX}_app php artisan migrate  # Применение всех миграций базы данных Laravel
     - docker exec ${CONTAINER_PREFIX}_app php artisan cache:clear  # Очистка всех кешей Laravel
     - docker exec ${CONTAINER_PREFIX}_app php artisan config:cache  # Кэширование всех конфигураций Laravel
-    - docker exec ${CONTAINER_PREFIX}_app chown -R root:www-data /var/www  # Настройка прав доступа ко всем файлам и директориям в /var/www
-    - docker exec ${CONTAINER_PREFIX}_app chmod 755 -R /var/www  # Установка прав доступа 755 для всех файлов и директорий в /var/www
-    - docker exec ${CONTAINER_PREFIX}_app chmod 775 -R /var/www/storage  # Установка прав доступа 775 для всех файлов и директорий в /var/www/storage
-    - docker exec ${CONTAINER_PREFIX}_app chmod 775 -R /var/www/bootstrap/cache  # Установка прав доступа 775 для всех файлов и директорий в /var/www/bootstrap/cache
+
+    # Настройка прав доступа ко всем файлам и директориям в /var/www
+    - docker exec ${CONTAINER_PREFIX}_app chown -R www-data:www-data /var/www  # Настройка владельца www-data для всех файлов и директорий
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type d -exec chmod 750 {} \;  # Установка прав доступа 750 для всех директорий
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type f -exec chmod 640 {} \;  # Установка прав доступа 640 для всех файлов
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type d -exec chmod 770 {} \;  # Установка прав доступа 770 для всех директорий в storage
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в storage
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type d -exec chmod 770 {} \;  # Установка прав доступа 770 для всех директорий в bootstrap/cache
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в bootstrap/cache
 
     # Опционально: заполнение базы данных тестовыми данными
     - docker exec ${CONTAINER_PREFIX}_app php artisan db:seed
