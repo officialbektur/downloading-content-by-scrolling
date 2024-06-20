@@ -12,9 +12,9 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Post::factory(100)
-			->has(\App\Models\Commentary::factory(random_int(1, 20)))
-			->has(\App\Models\Image::factory(random_int(1, 10)))
+        \App\Models\Post::factory(20)
+			->has(\App\Models\Commentary::factory(random_int(1, 10)))
+			->has(\App\Models\Image::factory(random_int(1, 5)))
 			->create();
     }
 }
