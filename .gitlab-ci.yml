@@ -8,6 +8,7 @@ variables:
   REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"  # Переменная для указания Docker Registry
 
 before_script:
+  - git config --global --add safe.directory /usr/bin/builds/29CZKTXz/0/officialbektur/downloading-content-by-scrolling
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY  # Аутентификация в Docker Registry перед выполнением скриптов
 
 app_build:
