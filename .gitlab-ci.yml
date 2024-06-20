@@ -56,6 +56,5 @@ dev_deploy:
     - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в storage
     - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type d -exec chmod 770 {} \;  # Установка прав доступа 770 для всех директорий в bootstrap/cache
     - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в bootstrap/cache
-
     # Опционально: заполнение базы данных тестовыми данными
 #    - docker exec ${CONTAINER_PREFIX}_app php artisan db:seed --force
