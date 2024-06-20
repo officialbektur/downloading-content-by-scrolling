@@ -32,6 +32,7 @@ dev_deploy:
     - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml up -d
     - docker exec ${CONTAINER_PREFIX}_app composer update
     - docker exec ${CONTAINER_PREFIX}_app composer install
+    - docker exec ${CONTAINER_PREFIX}_app npm i
     - docker exec ${CONTAINER_PREFIX}_app npm run build
     - docker exec ${CONTAINER_PREFIX}_app php artisan migrate
     - docker exec ${CONTAINER_PREFIX}_app php artisan cache:clear
