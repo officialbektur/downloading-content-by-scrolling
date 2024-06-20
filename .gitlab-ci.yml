@@ -48,12 +48,12 @@ dev_deploy:
 
     # Настройка прав доступа ко всем файлам и директориям в /var/www
     - docker exec ${CONTAINER_PREFIX}_app chown -R www-data:www-data /var/www  # Настройка владельца www-data для всех файлов и директорий
-    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type d -exec chmod 750 {} \;  # Установка прав доступа 750 для всех директорий
-    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type f -exec chmod 640 {} \;  # Установка прав доступа 640 для всех файлов
-    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type d -exec chmod 770 {} \;  # Установка прав доступа 770 для всех директорий в storage
-    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в storage
-    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type d -exec chmod 770 {} \;  # Установка прав доступа 770 для всех директорий в bootstrap/cache
-    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в bootstrap/cache
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type d -exec chmod 755 {} \;  # Установка прав доступа 750 для всех директорий
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type f -exec chmod 755 {} \;  # Установка прав доступа 640 для всех файлов
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type d -exec chmod 755 {} \;  # Установка прав доступа 770 для всех директорий в storage
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type f -exec chmod 755 {} \;  # Установка прав доступа 660 для всех файлов в storage
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type d -exec chmod 755 {} \;  # Установка прав доступа 770 для всех директорий в bootstrap/cache
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type f -exec chmod 755 {} \;  # Установка прав доступа 660 для всех файлов в bootstrap/cache
 
     # Опционально: заполнение базы данных тестовыми данными
     - docker exec ${CONTAINER_PREFIX}_app php artisan db:seed
