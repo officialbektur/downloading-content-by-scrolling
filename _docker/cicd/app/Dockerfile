@@ -4,19 +4,30 @@
 FROM php:8.2-fpm
 
 # Устанавливаем необходимые пакеты и расширения PHP
+# Установка базовых утилит apt
+# Установка разработочных файлов для PostgreSQL
+# Установка разработочных файлов для библиотеки libzip
+# Установка утилит для работы с zip архивами
+# Установка системы контроля версий Git
+# Установка PHP расширений
+# Расширение для работы с MySQL
+# Математические функции произвольной точности
+# Библиотека для работы с изображениями
+# Работа с zip архивами в PHP
+# Очистка временных файлов
 RUN apt-get update && apt-get install -y \
-      apt-utils \                 # Установка базовых утилит apt
-      libpq-dev \                 # Установка разработочных файлов для PostgreSQL
-      libpng-dev \                # Установка разработочных файлов для библиотеки libpng
-      libzip-dev \                # Установка разработочных файлов для библиотеки libzip
-      zip unzip \                 # Установка утилит для работы с zip архивами
-      git && \                    # Установка системы контроля версий Git
-    docker-php-ext-install \      # Установка PHP расширений
-      pdo_mysql \                # Расширение для работы с MySQL
-      bcmath \                   # Математические функции произвольной точности
-      gd \                       # Библиотека для работы с изображениями
-      zip && \                   # Работа с zip архивами в PHP
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*   # Очистка временных файлов
+      apt-utils \
+      libpq-dev \
+      libpng-dev \
+      libzip-dev \
+      zip unzip \
+      git && \
+    docker-php-ext-install \
+      pdo_mysql \
+      bcmath \
+      gd \
+      zip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 
 # Устанавливаем Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -57,13 +68,19 @@ RUN composer dump-autoload --no-scripts --optimize
 RUN npm install && npm run production
 
 # Удаляем лишние пакеты
+# Удаление базовых утилит apt
+# Удаление разработочных файлов для PostgreSQL
+# Удаление разработочных файлов для библиотеки libpng
+# Удаление разработочных файлов для библиотеки libzip
+# Удаление утилит для работы с zip архивами
+# Удаление системы контроля версий Git
 RUN apt-get purge -y --auto-remove \
-      apt-utils \                 # Удаление базовых утилит apt
-      libpq-dev \                 # Удаление разработочных файлов для PostgreSQL
-      libpng-dev \                # Удаление разработочных файлов для библиотеки libpng
-      libzip-dev \                # Удаление разработочных файлов для библиотеки libzip
-      zip unzip \                 # Удаление утилит для работы с zip архивами
-      git                         # Удаление системы контроля версий Git
+      apt-utils \
+      libpq-dev \
+      libpng-dev \
+      libzip-dev \
+      zip unzip \
+      git \
 
 # Очищаем кеш и временные файлы
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
