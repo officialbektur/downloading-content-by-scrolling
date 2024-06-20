@@ -36,7 +36,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --filename=composer --in
 # Устанавливаем Node.js и npm (последняя LTS версия)
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt-get install -y nodejs
 
-# Настраиваем PHP
+# Копируем кастомный php.ini для настройки PHP
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
 # Устанавливаем директорию работы
@@ -65,7 +65,7 @@ COPY vite.config.js /var/www/vite.config.js
 RUN composer dump-autoload --no-scripts --optimize
 
 # Устанавливаем зависимости npm и собираем ассеты
-RUN npm install && npm run production
+RUN npm install && npm run build
 
 # Удаляем лишние пакеты
 # Удаление базовых утилит apt
