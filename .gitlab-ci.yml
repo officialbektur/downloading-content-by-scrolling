@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 # .gitlab-ci.yml
 
 stages:
   - build  # Определение стадии сборки
   - deploy  # Определение стадии развертывания
-=======
-tages:
-  - build
->>>>>>> 61de105409d02b2f979dda3444b4cac6d9f46327
 
 variables:
   REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"  # Переменная для указания Docker Registry
