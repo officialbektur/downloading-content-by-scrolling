@@ -31,9 +31,9 @@ dev_deploy:
     - docker stop $(docker ps -a | grep ${CONTAINER_PREFIX}_ | awk '{print $1}') || true  # Остановка всех контейнеров с указанным префиксом, если они существуют
     - docker rm $(docker ps -a | grep ${CONTAINER_PREFIX}_ | awk '{print $1}') || true  # Удаление всех контейнеров с указанным префиксом, если они существуют
     - docker volume rm $(docker volume ls | grep ${CONTAINER_PREFIX}_ | awk '{print $2}') || true  # Удаление всех Docker томов с указанным префиксом, если они существуют
-    - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml down  # Остановка всех сервисов, определенных в docker-compose.dev.yml
+    - docker-compose -p $CONTAINER_PREFIX -f docker-compose.build.yml down  # Остановка всех сервисов, определенных в docker-compose.dev.yml
     - docker container prune -f  # Удаление всех неиспользуемых контейнеров
-    - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml up -d  # Запуск всех сервисов, определенных в docker-compose.dev.yml
+    - docker-compose -p $CONTAINER_PREFIX -f docker-compose.build.yml up -d  # Запуск всех сервисов, определенных в docker-compose.dev.yml
 
     # Установка зависимостей и миграция базы данных
     - docker exec ${CONTAINER_PREFIX}_app composer install --no-interaction --prefer-dist --optimize-autoloader  # Установка зависимостей Composer без взаимодействия с пользователем
