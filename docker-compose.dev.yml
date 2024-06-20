@@ -1,23 +1,22 @@
-# docker-compose.dev.yml
-version: '3.2'
+version: '3.2'  # Версия Docker Compose
 
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:latest  # Используем последнюю версию образа Nginx
     volumes:
-      - ./:/var/www
-      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./:/var/www  # Монтируем текущую директорию как корень сайта в контейнере
+      - ./_docker/nginx/conf.d:/etc/nginx/conf.d  # Подключаем кастомную конфигурацию Nginx
     ports:
-      - 80:80
+      - 80:80  # Открываем порт 80 на хосте для доступа к Nginx
     depends_on:
-      - app
-    container_name: ${CONTAINER_PREFIX}_nginx
+      - app  # Зависимость от сервиса app (для управления порядком запуска)
+    container_name: ${CONTAINER_PREFIX}_nginx  # Имя контейнера Nginx
 
   app:
-    container_name: ${CONTAINER_PREFIX}_app
-    image: $REGISTRY/dev/app:$CI_COMMIT_SHA
+    container_name: ${CONTAINER_PREFIX}_app  # Имя контейнера приложения
+    image: $REGISTRY/dev/app:$CI_COMMIT_SHA  # Образ приложения из Docker Registry
     environment:
-      - APP_NAME=$APP_NAME
+      - APP_NAME=$APP_NAME  # Переменные окружения для настройки приложения
       - APP_ENV=$APP_ENV
       - APP_URL=$APP_URL
       - DB_CONNECTION=$DB_CONNECTION
@@ -28,20 +27,20 @@ services:
       - DB_PASSWORD=$DB_PASSWORD
       - APP_DEBUG=$APP_DEBUG
     volumes:
-      - ./:/var/www
-    working_dir: /var/www
+      - ./:/var/www  # Монтируем текущую директорию как корень сайта в контейнере
+    working_dir: /var/www  # Устанавливаем рабочую директорию
     depends_on:
-      - db
+      - db  # Зависимость от сервиса db (для управления порядком запуска)
 
   db:
-    image: mysql:8.0
-    restart: always
+    image: mysql:8.0  # Образ MySQL версии 8.0
+    restart: always  # Всегда перезапускать контейнер при его остановке
     volumes:
-      - ./tmp/db:/var/lib/mysql
+      - ./tmp/db:/var/lib/mysql  # Монтируем директорию для данных MySQL
     environment:
-      MYSQL_DATABASE: $DB_DATABASE
+      MYSQL_DATABASE: $DB_DATABASE  # Переменные окружения для настройки MySQL
       MYSQL_ROOT_PASSWORD: $DB_PASSWORD
     ports:
-      - 3306:3306
-    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    container_name: ${CONTAINER_PREFIX}_db
+      - 3306:3306  # Открываем порт 3306 на хосте для доступа к MySQL
+    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci  # Команда для запуска MySQL
+    container_name: ${CONTAINER_PREFIX}_db  # Имя контейнера MySQL
