@@ -17,7 +17,7 @@ app_build:
     - build  # Используем тег "build" для выполнения на соответствующих агентах
   only:
     - develop  # Выполнять задачу только для ветки develop
-  script:
+#  script:
 #    - docker build --build-arg NODE_ENV="dev" -t "$REGISTRY/dev/app:$CI_COMMIT_SHA" -f ./_docker/cicd/app/Dockerfile .  # Сборка Docker образа приложения с указанием переменной среды
 #    - docker push "$REGISTRY/dev/app:$CI_COMMIT_SHA"  # Публикация собранного Docker образа в Docker Registry
 #
