@@ -1,9 +1,9 @@
 # _docker/cicd/app/Dockerfile
-# _docker/cicd/app/Dockerfile
 
+# Используем базовый образ PHP с поддержкой FPM
 FROM php:8.2-fpm
 
-# Установка необходимых пакетов
+# Устанавливаем необходимые пакеты и расширения PHP
 RUN apt-get update && apt-get install -y \
       apt-utils \
       libpq-dev \
@@ -11,28 +11,29 @@ RUN apt-get update && apt-get install -y \
       libzip-dev \
       zip unzip \
       git && \
-      docker-php-ext-install \
+    docker-php-ext-install \
       pdo_mysql \
       bcmath \
       gd \
       zip && \
-      apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Установка Composer
+# Устанавливаем Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- --filename=composer --install-dir=/usr/local/bin
 
-# Установка Node.js и npm (последняя LTS версия)
+# Устанавливаем Node.js и npm (последняя LTS версия)
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt-get install -y nodejs
 
-# Настройки PHP
+# Настраиваем PHP
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
+# Устанавливаем директорию работы
 WORKDIR /var/www
 
-# Копирование файлов Composer и установка зависимостей
+# Копируем файлы Composer и устанавливаем зависимости
 COPY composer.* ./
-RUN composer install --no-interaction --no-plugins --no-suggest --no-scripts --no-autoloader --prefer-dist
+RUN composer install --no-interaction --no-plugins --no-scripts --no-autoloader --prefer-dist
 
 # Копирование всех файлов проекта
 COPY app            /var/www/app
@@ -49,11 +50,20 @@ COPY postcss.config.js /var/www/postcss.config.js
 COPY tailwind.config.js /var/www/tailwind.config.js
 COPY vite.config.js /var/www/vite.config.js
 
-# Создание автозагрузки Composer
+# Создаем автозагрузку Composer
 RUN composer dump-autoload --no-scripts --optimize
 
-# Установка npm-зависимостей и сборка ассетов
-RUN npm install && npm run build
+# Устанавливаем зависимости npm и собираем ассеты
+RUN npm install && npm run production
 
-# Создание алиаса для artisan
-RUN echo "alias a='artisan'" >> /root/.bashrc
+# Удаляем лишние пакеты
+RUN apt-get purge -y --auto-remove \
+      apt-utils \
+      libpq-dev \
+      libpng-dev \
+      libzip-dev \
+      zip unzip \
+      git
+
+# Очищаем кеш и временные файлы
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
