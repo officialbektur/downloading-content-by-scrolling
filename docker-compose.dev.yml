@@ -14,7 +14,7 @@ services:
 
   app:
     container_name: ${CONTAINER_PREFIX}_app
-    image: $REGISTRY/$PROJECT_ENV/app:$PROJECT_VERSION
+    image: $REGISTRY/dev/app:$CI_COMMIT_SHA
     environment:
       - APP_KEY=$APP_KEY
       - APP_NAME=$APP_NAME
