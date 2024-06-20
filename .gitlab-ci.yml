@@ -6,6 +6,7 @@ stages:
 
 before_script:
   - echo "huina"
+  - echo "huina"
 
 app_build:
   stage: build
