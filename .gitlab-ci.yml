@@ -4,9 +4,6 @@ stages:
   - build
   - deploy
 
-variables:
-  REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"
-
 before_script:
   - echo "huina"
 
