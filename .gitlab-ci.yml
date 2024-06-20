@@ -44,7 +44,7 @@ dev_deploy:
     - docker exec ${CONTAINER_PREFIX}_app php artisan key:generate  # Генерация нового ключа приложения
 
     # Применение всех миграций базы данных Laravel и кэширование конфигураций
-    - docker exec ${CONTAINER_PREFIX}_app php artisan migrate --force  # Применение всех миграций базы данных Laravel
+    - docker exec ${CONTAINER_PREFIX}_app php artisan migrate  # Применение всех миграций базы данных Laravel
     - docker exec ${CONTAINER_PREFIX}_app php artisan cache:clear  # Очистка всех кешей Laravel
     - docker exec ${CONTAINER_PREFIX}_app php artisan config:cache  # Кэширование всех конфигураций Laravel
 
@@ -58,4 +58,4 @@ dev_deploy:
     - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в bootstrap/cache
 
     # Опционально: заполнение базы данных тестовыми данными
-    - docker exec ${CONTAINER_PREFIX}_app php artisan db:seed --force
+#    - docker exec ${CONTAINER_PREFIX}_app php artisan db:seed
