@@ -80,7 +80,7 @@ RUN apt-get purge -y --auto-remove \
       libpng-dev \
       libzip-dev \
       zip unzip \
-      git \
+      git
 
 # Очищаем кеш и временные файлы
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
