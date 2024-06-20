@@ -39,6 +39,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt-get instal
 # Копируем кастомный php.ini для настройки PHP
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
+# Устанавливаем директорию работы
 WORKDIR /var/www
 
 #  Устанавливаем composer
