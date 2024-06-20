@@ -42,6 +42,5 @@ COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 # Устанавливаем директорию работы
 WORKDIR /var/www
 
-# Копируем файлы Composer и устанавливаем зависимости
-COPY composer.* ./
+#  Устанавливаем composer
 RUN composer install --no-interaction --no-plugins --no-scripts --no-autoloader --prefer-dist
