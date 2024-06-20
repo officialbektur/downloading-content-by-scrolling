@@ -1,18 +1,61 @@
 # .gitlab-ci.yml
 
 stages:
-  - build
-  - deploy
+  - build  # Определение стадии сборки
+  - deploy  # Определение стадии развертывания
+
+variables:
+  REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"  # Переменная для указания Docker Registry
 
 before_script:
-  - echo "huina"
-  - echo "huina"
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY  # Аутентификация в Docker Registry перед выполнением скриптов
 
 app_build:
-  stage: build
+  stage: build  # Задача сборки относится к стадии сборки
   tags:
-    - build
+    - build  # Используем тег "build" для выполнения на соответствующих агентах
   only:
-    - develop
+    - develop  # Выполнять задачу только для ветки develop
   script:
-    - echo "cxcxc"
+    - docker build --build-arg NODE_ENV="dev" -t "$REGISTRY/dev/app:$CI_COMMIT_SHA" -f ./_docker/cicd/app/Dockerfile .  # Сборка Docker образа приложения с указанием переменной среды
+    - docker push "$REGISTRY/dev/app:$CI_COMMIT_SHA"  # Публикация собранного Docker образа в Docker Registry
+
+dev_deploy:
+  stage: deploy  # Задача развертывания относится к стадии развертывания
+  tags:
+    - cicd  # Используем тег "cicd" для выполнения на соответствующих агентах
+  only:
+    - develop  # Выполнять задачу только для ветки develop
+  script:
+    - export CONTAINER_PREFIX=project  # Экспортируем префикс для именования контейнеров
+    - docker stop $(docker ps -a | grep ${CONTAINER_PREFIX}_ | awk '{print $1}') || true  # Остановка всех контейнеров с указанным префиксом, если они существуют
+    - docker rm $(docker ps -a | grep ${CONTAINER_PREFIX}_ | awk '{print $1}') || true  # Удаление всех контейнеров с указанным префиксом, если они существуют
+    - docker volume rm $(docker volume ls | grep ${CONTAINER_PREFIX}_ | awk '{print $2}') || true  # Удаление всех Docker томов с указанным префиксом, если они существуют
+    - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml down  # Остановка всех сервисов, определенных в docker-compose.dev.yml
+    - docker container prune -f  # Удаление всех неиспользуемых контейнеров
+    - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml up -d  # Запуск всех сервисов, определенных в docker-compose.dev.yml
+
+    # Установка зависимостей и миграция базы данных
+    - docker exec ${CONTAINER_PREFIX}_app composer install --no-interaction --prefer-dist --optimize-autoloader  # Установка зависимостей Composer без взаимодействия с пользователем
+    - docker exec ${CONTAINER_PREFIX}_app npm ci  # Установка зависимостей npm
+
+    # Копирование и настройка .env файла
+    - docker exec ${CONTAINER_PREFIX}_app cp .env.example .env  # Копирование .env.example в .env
+    - docker exec ${CONTAINER_PREFIX}_app php artisan key:generate  # Генерация нового ключа приложения
+
+    # Применение всех миграций базы данных Laravel и кэширование конфигураций
+    - docker exec ${CONTAINER_PREFIX}_app php artisan migrate --force  # Применение всех миграций базы данных Laravel
+    - docker exec ${CONTAINER_PREFIX}_app php artisan cache:clear  # Очистка всех кешей Laravel
+    - docker exec ${CONTAINER_PREFIX}_app php artisan config:cache  # Кэширование всех конфигураций Laravel
+
+    # Настройка прав доступа ко всем файлам и директориям в /var/www
+    - docker exec ${CONTAINER_PREFIX}_app chown -R www-data:www-data /var/www  # Настройка владельца www-data для всех файлов и директорий
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type d -exec chmod 750 {} \;  # Установка прав доступа 750 для всех директорий
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www -type f -exec chmod 640 {} \;  # Установка прав доступа 640 для всех файлов
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type d -exec chmod 770 {} \;  # Установка прав доступа 770 для всех директорий в storage
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/storage -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в storage
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type d -exec chmod 770 {} \;  # Установка прав доступа 770 для всех директорий в bootstrap/cache
+    - docker exec ${CONTAINER_PREFIX}_app find /var/www/bootstrap/cache -type f -exec chmod 660 {} \;  # Установка прав доступа 660 для всех файлов в bootstrap/cache
+
+    # Опционально: заполнение базы данных тестовыми данными
+    - docker exec ${CONTAINER_PREFIX}_app php artisan db:seed --force
