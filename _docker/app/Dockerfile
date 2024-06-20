@@ -1,3 +1,5 @@
+# _docker/app/Dockerfile
+
 # Используем базовый образ PHP с поддержкой FPM версии 8.2
 FROM php:8.2-fpm
 
