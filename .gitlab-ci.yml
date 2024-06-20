@@ -1,20 +1,20 @@
 # .gitlab-ci.yml
 
 stages:
-  - build  # Определение стадии сборки
-  - deploy  # Определение стадии развертывания
+  - build
+  - deploy
 
 variables:
-  REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"  # Переменная для указания Docker Registry
+  REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"
 
 before_script:
   - echo "huina"
 
 app_build:
-  stage: build  # Задача сборки относится к стадии сборки
+  stage: build
   tags:
-    - build  # Используем тег "build" для выполнения на соответствующих агентах
+    - build
   only:
-    - develop  # Выполнять задачу только для ветки develop
+    - develop
   script:
     - echo "cxcxc"
