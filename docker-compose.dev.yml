@@ -1,3 +1,4 @@
+# docker-compose.dev.yml
 version: '3.2'
 
 services:
@@ -16,7 +17,6 @@ services:
     container_name: ${CONTAINER_PREFIX}_app
     image: $REGISTRY/dev/app:$CI_COMMIT_SHA
     environment:
-      - APP_KEY=$APP_KEY
       - APP_NAME=$APP_NAME
       - APP_ENV=$APP_ENV
       - APP_URL=$APP_URL
@@ -43,5 +43,5 @@ services:
       MYSQL_ROOT_PASSWORD: $DB_PASSWORD
     ports:
       - 3306:3306
-    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    command: --character-set-server=utf8 --collation-server=utf8_unicode_ci
     container_name: ${CONTAINER_PREFIX}_db

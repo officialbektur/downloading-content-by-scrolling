@@ -1,9 +1,12 @@
+# .gitlab-ci.yml
+
 stages:
   - build
   - deploy
 
 variables:
   REGISTRY: "registry.gitlab.com/officialbektur/downloading-content-by-scrolling"
+  DOCKER_DRIVER: overlay2
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -29,11 +32,16 @@ dev_deploy:
     - docker stop $(docker ps -a | grep ${CONTAINER_PREFIX}_ | awk '{print $1}') || true
     - docker rm $(docker ps -a | grep ${CONTAINER_PREFIX}_ | awk '{print $1}') || true
     - docker volume rm $(docker volume ls | grep ${CONTAINER_PREFIX}_ | awk '{print $2}') || true
+    - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml down
+    - docker container prune -f
     - docker-compose -p $CONTAINER_PREFIX -f docker-compose.dev.yml up -d
-    - docker exec ${CONTAINER_PREFIX}_app composer update
-    - docker exec ${CONTAINER_PREFIX}_app composer install
-    - docker exec ${CONTAINER_PREFIX}_app npm i
+    - docker exec ${CONTAINER_PREFIX}_app composer install --no-interaction --prefer-dist --optimize-autoloader
+    - docker exec ${CONTAINER_PREFIX}_app npm ci
     - docker exec ${CONTAINER_PREFIX}_app npm run build
-    - docker exec ${CONTAINER_PREFIX}_app php artisan migrate
+    - docker exec ${CONTAINER_PREFIX}_app php artisan migrate --force
     - docker exec ${CONTAINER_PREFIX}_app php artisan cache:clear
     - docker exec ${CONTAINER_PREFIX}_app php artisan config:cache
+    - docker exec ${CONTAINER_PREFIX}_app chown -R root:www-data /var/www
+    - docker exec ${CONTAINER_PREFIX}_app chmod 755 -R /var/www
+    - docker exec ${CONTAINER_PREFIX}_app chmod 775 -R /var/www/storage
+    - docker exec ${CONTAINER_PREFIX}_app chmod 775 -R /var/www/bootstrap/cache
